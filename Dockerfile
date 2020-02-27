@@ -1,4 +1,4 @@
-FROM registry.redhat.io/redhat-sso-7/sso73-openshift
+FROM image-registry.openshift-image-registry.svc:5000/openshift/redhat-sso73-openshift
 
 COPY extensions/actions.cli extensions/postconfigure.sh extensions/ojdbc8.jar /opt/eap/extensions/
 USER root
