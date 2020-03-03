@@ -1,0 +1,35 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: rhsso73-oraclejdbc-build
+  namespace: openshift
+  labels:
+    name: rhsso73-oraclejdbc-build
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'redhat-sso73-openshift-oracle:latest'
+  resources: {}
+  successfulBuildsHistoryLimit: 2
+  failedBuildsHistoryLimit: 5
+  strategy:
+    type: Docker
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'redhat-sso73-openshift:latest'
+  postCommit: {}
+  source:
+    type: Dockerfile
+    dockerfile: 'FROM openshift/redhat-sso73-openshift:latest\nRUN echo "## admin cli commands to edit the configuration embed-server --std-out=echo --server-config=standalone-openshift.xml" > extensions/actions.cli\n&& RUN echo "batch" >> extensions/actions.cli\n&& RUN echo "module add --name=com.oracle --resources=/opt/eap/extensions/ojdbc8.jar --dependencies=javax.api,javax.resource.api" >> extensions/actions.cli\n&& RUN echo "/subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)" >> extensions/actions.cli\n&& RUN echo "/subsystem=datasources/data-source=KeycloakDS:remove()" >> extensions/actions.cli\n&& RUN echo "/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=\"jdbc\:oracle\:thin\:@(DESCRIPTION\=(LOAD_BALANCE\=on)(ADDRESS\=(PROTOCOL\=TCP)(HOST\=172.30.180.21)(PORT\=1521))(ADDRESS\=(PROTOCOL\=TCP)(HOST\=192.168.130.1)(PORT\=1521))(CONNECT_DATA\=(SERVICE_NAME\=XEPDB1)))\",driver-name=oracle,user-name=system,password=c98dbaa99107458c)" >> extensions/actions.cli\n&& RUN echo "/system-property=hibernate.dialect:add(value=\"org.hibernate.dialect.Oracle12cDialect\")" >> extensions/actions.cli\n&& RUN echo "run-batch" >> extensions/actions.cli\n&& RUN echo "quit" >> extensions/actions.cli\n&& RUN echo "$JBOSS_HOME/bin/jboss-cli.sh --file=/opt/eap/extensions/actions.cli" >> extensions/postconfigure.sh\nUSER root\nRUN chown jboss:jboss /opt/eap/extensions/*\nRUN chmod 777 /opt/eap/extensions/*.sh\nUSER jboss\nCMD ["/opt/eap/bin/openshift-launch.sh"]'
+    secrets:
+    - secret:
+        name: rhsso73-oraclejdbc-build-files
+  triggers:
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
+  runPolicy: Serial
