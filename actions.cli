@@ -4,7 +4,7 @@ batch
 module add --name=com.oracle --resources=/opt/eap/extensions/ojdbc8.jar --dependencies=javax.api,javax.resource.api
 /subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
 /subsystem=datasources/data-source=KeycloakDS:remove()
-/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=\"jdbc\:oracle\:thin\:@(DESCRIPTION\=(LOAD_BALANCE\=on)(ADDRESS\=(PROTOCOL\=TCP)(HOST\=172.30.180.21)(PORT\=1521))(ADDRESS\=(PROTOCOL\=TCP)(HOST\=192.168.130.1)(PORT\=1521))(CONNECT_DATA\=(SERVICE_NAME\=XEPDB1)))\",driver-name=oracle,user-name=system,password=c98dbaa99107458c)
+/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=\"jdbc\:oracle\:thin\:@(DESCRIPTION\=(LOAD_BALANCE\=on)(ADDRESS\=(PROTOCOL\=TCP)(HOST\=${env.DB_HOST})(PORT\=${env.DB_PORT}))(ADDRESS\=(PROTOCOL\=TCP)(HOST\=${env.DB_HOST})(PORT\=${env.DB_PORT}))(CONNECT_DATA\=(SERVICE_NAME\=${env.DB_DATABASE})))\",driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD})
 /system-property=hibernate.dialect:add(value=\"org.hibernate.dialect.Oracle12cDialect\")
 run-batch
 quit
