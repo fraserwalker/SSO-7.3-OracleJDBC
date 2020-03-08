@@ -25,12 +25,7 @@ metadata:
       communication using passthrough TLS.
     template.openshift.io/support-url: https://access.redhat.com
     version: 7.3.6.GA
-  creationTimestamp: 2020-03-08T06:01:07Z
   name: sso73-https-oracle-persistent
-  namespace: sso
-  resourceVersion: "487953"
-  selfLink: /apis/template.openshift.io/v1/namespaces/sso/templates/sso73-https-oracle-persistent
-  uid: d416575d-c699-4a0b-80a5-2aa0a70af30f
 objects:
 - apiVersion: v1
   kind: Service
