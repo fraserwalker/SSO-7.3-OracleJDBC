@@ -72,23 +72,6 @@ objects:
     selector:
       deploymentConfig: ${APPLICATION_NAME}
 - apiVersion: v1
-  kind: Service
-  metadata:
-    annotations:
-      description: The oracle server's IP address and port.
-    labels:
-      application: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}-oracle
-  spec:
-    externalIPs:
-    - ${{DB_HOST}}
-    ports:
-    - name: oracle
-      port: ${{DB_PORT}}
-      targetPort: ${{DB_PORT}}
-    selector:
-      deploymentConfig: ${APPLICATION_NAME}
-- apiVersion: v1
   id: ${APPLICATION_NAME}-http
   kind: Route
   metadata:
@@ -190,7 +173,7 @@ objects:
           - name: SSO_TRUSTSTORE_PASSWORD
             value: ${SSO_TRUSTSTORE_PASSWORD}
           - name: DB_HOST
-            value: ${APPLICATION_NAME}-oracle
+            value: ${DB_HOST}
           - name: DB_PORT
             value: ${DB_PORT}
           - name: DB_DATABASE
@@ -371,8 +354,8 @@ parameters:
   displayName: Container Memory Limit
   name: MEMORY_LIMIT
   value: 1Gi
-- description: The IP Address of the Database Host.
-  displayName: The IP Address of the Database Host
+- description: The FQDN of the Database Host.
+  displayName: The FQDN of the Database Host
   name: DB_HOST
   required: true
 - description: The Port for the Database Host.
