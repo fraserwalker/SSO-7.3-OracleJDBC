@@ -2,7 +2,6 @@ kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
   name: rhsso73-oraclejdbc-build
-  namespace: sso
   labels:
     name: rhsso73-oraclejdbc-build
 spec:
@@ -11,7 +10,6 @@ spec:
     to:
       kind: ImageStreamTag
       name: 'redhat-sso73-openshift-oracle:latest'
-      namespace: sso
   resources: {}
   successfulBuildsHistoryLimit: 2
   failedBuildsHistoryLimit: 5
