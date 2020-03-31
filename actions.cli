@@ -4,7 +4,7 @@ batch
 module add --name=com.oracle --resources=/opt/eap/extensions/ojdbc8.jar --dependencies=javax.api,javax.resource.api
 /subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
 /subsystem=datasources/data-source=KeycloakDS:remove()
-/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url="jdbc\:oracle\:thin\:@//${env.DB_HOST}:${env.DB_PORT}/${env.DB_DATABASE}",driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD})
+/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url="jdbc\:oracle\:thin\:@(DESCRIPTION_LIST\=(FAILOVER\=TRUE)(LOAD_BALANCE\=FALSE)(DESCRIPTION\=(CONNECT_TIMEOUT=\0)(RETRY_COUNT\=0)(ADDRESS_LIST\=(ADDRESS\=(PROTOCOL\=TCP)(HOST\={DB_PROD_HOST}})(PORT\={DB_PROD_PORT}})))(CONNECT_DATA\=(SERVICE_NAME\={DB_PROD_DATABASE}})(SERVER\=DEDICATED)))(DESCRIPTION\=(CONNECT_TIMEOUT\=1)(RETRY_COUNT\=0)(ADDRESS_LIST\=(ADDRESS\=(PROTOCOL\=TCP)(HOST\={DB_DR_HOST}})(PORT\={DB_DR_PORT}})))(CONNECT_DATA\=(SERVICE_NAME\={DB_DR_DATABASE}})(SERVER\=DEDICATED))))",driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD})
 /system-property=hibernate.dialect:add(value="org.hibernate.dialect.Oracle12cDialect")
 run-batch
 quit
