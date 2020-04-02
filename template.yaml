@@ -172,12 +172,8 @@ objects:
             value: /etc/sso-secret-volume
           - name: SSO_TRUSTSTORE_PASSWORD
             value: ${SSO_TRUSTSTORE_PASSWORD}
-          - name: DB_HOST
+          - name: DB_URL
             value: ${DB_HOST}
-          - name: DB_PORT
-            value: ${DB_PORT}
-          - name: DB_DATABASE
-            value: ${DB_DATABASE}
           - name: DB_USERNAME
             value: ${DB_USERNAME}
           - name: DB_PASSWORD
@@ -354,17 +350,9 @@ parameters:
   displayName: Container Memory Limit
   name: MEMORY_LIMIT
   value: 1Gi
-- description: The FQDN of the Database Host.
-  displayName: The FQDN of the Database Host
-  name: DB_HOST
-  required: true
-- description: The Port for the Database Host.
-  displayName: The Port for the Database Host
-  name: DB_PORT
-  required: true
-- description: The Service Name of the Database.
-  displayName: The Service Name of the Database
-  name: DB_DATABASE
+- description: The JDBC Connection String for the Database.
+  displayName: The JDBC Connection String for the Database
+  name: DB_URL
   required: true
 - description: The User Name to Connect to the Database.
   displayName: The User Name to Connect to the Database
