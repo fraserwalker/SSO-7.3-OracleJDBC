@@ -2,26 +2,28 @@ apiVersion: infinispan.org/v1
 kind: Infinispan
 metadata:
   name: sso-infinispan
-  namespace: rhsso
+  namespace: loyalty-rhsso-preprod
 spec:
   replicas: 2
+  security:
+    endpointSecretName: jdg-connect-secret
   service:
     type: DataGrid
     sites:
       local:
         name: DX01
         expose:
-          type: LoadBalancer
+          type: NodePort
       locations:
       - name: DX01
-        url: openshift://replace.this:6443
-        secretName: dbx-token
+        url: openshift://api.ocpnonproddx01.etisalat.corp.ae:6443
+        secretName: dx01-preprod-token 
       - name: AU01
-        url: openshift://replace.this:6443
-        secretName: dbx-token
+        url: openshift://api.ocpnonprodau01.etisalat.corp.ae:6443
+        secretName: au01-preprod-token
     logging:
       categories:
         org.infinispan: trace
         org.jgroups: trace
     expose:
-      type: LoadBalancer
+      type: NodePort
