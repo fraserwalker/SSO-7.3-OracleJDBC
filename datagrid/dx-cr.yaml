@@ -1,0 +1,27 @@
+apiVersion: infinispan.org/v1
+kind: Infinispan
+metadata:
+  name: sso-infinispan
+  namespace: rhsso
+spec:
+  replicas: 2
+  service:
+    type: DataGrid
+    sites:
+      local:
+        name: DX01
+        expose:
+          type: LoadBalancer
+      locations:
+      - name: DX01
+        url: openshift://replace.this:6443
+        secretName: dbx-token
+      - name: AU01
+        url: openshift://replace.this:6443
+        secretName: dbx-token
+    logging:
+      categories:
+        org.infinispan: trace
+        org.jgroups: trace
+    expose:
+      type: LoadBalancer
