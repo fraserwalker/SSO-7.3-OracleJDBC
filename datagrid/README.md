@@ -10,9 +10,15 @@ oc create secret generic --from-file=identities.yaml jdg-connect-secret
 5. Run the following:
   
   create cache work --file=/tmp/cache.xml
+  
   create cache sessions --file=/tmp/cache.xml
+  
   create cache clientSessions --file=/tmp/cache.xml
+  
   create cache offlineSessions --file=/tmp/cache.xml
+  
   create cache offlineClientSessions --file=/tmp/cache.xml
+  
   create cache actionTokens --file=/tmp/cache.xml
+  
   create cache loginFailures --file=/tmp/cache.xml
