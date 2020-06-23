@@ -22,3 +22,6 @@ oc create secret generic --from-file=identities.yaml jdg-connect-secret
   create cache actionTokens --file=/tmp/cache.xml
   
   create cache loginFailures --file=/tmp/cache.xml
+  
+  
+  https://github.com/infinispan/infinispan-images
