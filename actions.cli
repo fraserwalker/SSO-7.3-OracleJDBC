@@ -5,7 +5,7 @@ batch
 module add --name=com.oracle --resources=/opt/eap/extensions/ojdbc8.jar --dependencies=javax.api,javax.resource.api
 /subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
 /subsystem=datasources/data-source=KeycloakDS:remove()
-/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=${env.DB_URL},driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD})
+/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=${env.DB_URL},driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD},validate-on-match=true,valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker,exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter)
 /system-property=hibernate.dialect:add(value="org.hibernate.dialect.Oracle12cDialect")
 run-batch
 ## Data Grid
