@@ -5,34 +5,31 @@ batch
 module add --name=com.oracle --resources=/opt/eap/extensions/ojdbc8.jar --dependencies=javax.api,javax.resource.api
 /subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
 /subsystem=datasources/data-source=KeycloakDS:remove()
-/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=${env.DB_URL},driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD})
+/subsystem=datasources/data-source=KeycloakDS:add(jndi-name=java:jboss/datasources/KeycloakDS,enabled=true,use-java-context=true,connection-url=${env.DB_URL},driver-name=oracle,user-name=${env.DB_USERNAME},password=${env.DB_PASSWORD},validate-on-match=true,valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker,exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter)
 /system-property=hibernate.dialect:add(value="org.hibernate.dialect.Oracle12cDialect")
 run-batch
 ## Data Grid
+### Add Site and Local Data Grid Host with Port
 /subsystem=jgroups/stack=tcp/transport=TCP:write-attribute(name=site,value=DX01)
 /subsystem=infinispan/cache-container=keycloak:write-attribute(name=module,value=org.keycloak.keycloak-model-infinispan)
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=remote-cache:add(host=sso-infinispan,port=11222)
-/subsystem=infinispan/cache-container=keycloak/replicated-cache=work/store=remote:add(cache=work,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true){allow-resource-service-restart=true}
-/subsystem=infinispan/cache-container=keycloak/replicated-cache=work/store=remote/property=rawValues:add(value=true)
-/subsystem=infinispan/cache-container=keycloak/replicated-cache=work/store=remote/property=marshaller:add(value=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory)
-
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote:add(cache=sessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true){allow-resource-service-restart=true}
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote/property=rawValues:add(value=true)
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote/property=marshaller:add(value=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory)
-
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions/store=remote:add(cache=offlineSessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true){allow-resource-service-restart=true}
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions/store=remote/property=rawValues:add(value=true)
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions/store=remote/property=marshaller:add(value=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory)
-
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=clientSessions/store=remote:add(cache=clientSessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true){allow-resource-service-restart=true}
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=clientSessions/store=remote/property=rawValues:add(value=true)
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=clientSessions/store=remote/property=marshaller:add(value=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory)
-
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote:add(cache=sessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true){allow-resource-service-restart=true}
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote/property=rawValues:add(value=true)
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote/property=marshaller:add(value=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory)
-
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote:add(cache=sessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true){allow-resource-service-restart=true}
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote/property=rawValues:add(value=true)
-/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote/property=marshaller:add(value=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory)
+### Add Remote Cache Configuration
+batch
+/subsystem=infinispan/remote-cache-container=sso-datagrid:add(default-remote-cluster=sso-infinispan)
+/subsystem=infinispan/remote-cache-container=sso-datagrid/remote-cluster=sso-infinispan:add(socket-bindings=[remote-cache])
+run-batch
+### Work Cache
+/subsystem=infinispan/cache-container=keycloak/replicated-cache=work/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
+### Sessions Cache
+/subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
+### SfflineSessions Cache
+/subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
+### ClientSessions Cache
+/subsystem=infinispan/cache-container=keycloak/distributed-cache=clientSessions/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
+### OfflineClientSessions Cache
+/subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineClientSessions/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
+### ActionTokens Cache
+/subsystem=infinispan/cache-container=keycloak/distributed-cache=actionTokens/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
+### LoginFailures Cache
+/subsystem=infinispan/cache-container=keycloak/distributed-cache=loginFailures/store=hotrod:add(remote-cache-container=sso-datagrid,passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
 quit
