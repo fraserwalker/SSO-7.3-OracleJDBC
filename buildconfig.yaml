@@ -1,15 +1,15 @@
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
-  name: rhsso73-oraclejdbc-build
+  name: rhsso74-oraclejdbc-build
   labels:
-    name: rhsso73-oraclejdbc-build
+    name: rhsso74-oraclejdbc-build
 spec:
   nodeSelector: null
   output:
     to:
       kind: ImageStreamTag
-      name: 'redhat-sso73-openshift-oracle:latest'
+      name: 'redhat-sso74-openshift-oracle:latest'
   resources: {}
   successfulBuildsHistoryLimit: 2
   failedBuildsHistoryLimit: 5
@@ -19,12 +19,12 @@ spec:
       from:
         kind: ImageStreamTag
         namespace: openshift
-        name: 'redhat-sso73-openshift:latest'
+        name: 'redhat-sso74-openshift:latest'
   postCommit: {}
   source:
     type: Dockerfile
     dockerfile: |-
-      FROM openshift/redhat-sso73-openshift:latest
+      FROM openshift/redhat-sso74-openshift:latest
       USER root
       COPY ./actions.cli ./postconfigure.sh /opt/eap/extensions/
       RUN chown jboss:jboss /opt/eap/extensions/* && chmod 555 /opt/eap/extensions/*.* && chmod 777 /opt/eap/extensions/*.sh
@@ -32,7 +32,7 @@ spec:
       CMD ["/opt/eap/bin/openshift-launch.sh"]
     secrets:
       - secret:
-          name: rhsso73-oraclejdbc-build-files
+          name: rhsso-oraclejdbc-build-files
   triggers:
     - type: ImageChange
       imageChange: {}
