@@ -19,12 +19,12 @@ spec:
       from:
         kind: ImageStreamTag
         namespace: openshift
-        name: 'redhat-sso74-openshift:latest'
+        name: 'sso74-openshift-rhel8:7.4'
   postCommit: {}
   source:
     type: Dockerfile
     dockerfile: |-
-      FROM openshift/redhat-sso74-openshift:latest
+      FROM openshift/sso74-openshift-rhel8:7.4
       USER root
       COPY ./actions.cli ./postconfigure.sh /opt/eap/extensions/
       RUN chown jboss:jboss /opt/eap/extensions/* && chmod 555 /opt/eap/extensions/*.* && chmod 777 /opt/eap/extensions/*.sh
