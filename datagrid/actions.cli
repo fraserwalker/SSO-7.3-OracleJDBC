@@ -10,7 +10,7 @@ module add --name=com.oracle --resources=/opt/eap/extensions/ojdbc8.jar --depend
 run-batch
 ## Data Grid
 ### Add Site and Local Data Grid Host with Port
-/subsystem=jgroups/stack=tcp/transport=TCP:write-attribute(name=site,value=DX01)
+/subsystem=jgroups/stack=tcp/transport=TCP:write-attribute(name=site,value=${env.SITE_NAME:SITE})
 /subsystem=infinispan/cache-container=keycloak:write-attribute(name=module,value=org.keycloak.keycloak-model-infinispan)
 /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=remote-cache:add(host=sso-infinispan,port=11222)
 ### Add Remote Cache Configuration
