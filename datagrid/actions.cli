@@ -32,10 +32,9 @@ run-batch
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=actionTokens/store=remote:add(cache=actionTokens,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
 ## LoginFailures Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=loginFailures/store=remote:add(cache=loginFailures,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-/subsystem
 ### Logging
-/subsystem=logging/logger=org.keycloak/:add(category=org.keycloak,level=${env.LOG_LEVEL:WARN})
-/subsystem=logging/logger=org.hibernate/:add(category=org.hibernate,level=${env.LOG_LEVEL:WARN})
-/subsystem=logging/logger=org.jgroups/:add(category=org.jgroups,level=${env.LOG_LEVEL:WARN})
-/subsystem=logging/logger=org.infinispan/:add(category=org.infinispan,level=${env.LOG_LEVEL:WARN})
+/subsystem=logging/logger=org.keycloak/:add(category=org.keycloak,level=${env.LOG_LEVEL_KEYCLOAK:WARN})
+/subsystem=logging/logger=org.hibernate/:add(category=org.hibernate,level=${env.LOG_LEVEL_HIBERNATE:WARN})
+/subsystem=logging/logger=org.jgroups/:add(category=org.jgroups,level=${env.LOG_LEVEL_JGROUPS:WARN})
+/subsystem=logging/logger=org.infinispan/:add(category=org.infinispan,level=${env.LOG_LEVEL_INFINISPAN:WARN})
 quit
