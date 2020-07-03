@@ -18,23 +18,26 @@ batch
 /subsystem=infinispan/remote-cache-container=sso-datagrid:add(default-remote-cluster=sso-infinispan)
 /subsystem=infinispan/remote-cache-container=sso-datagrid/remote-cluster=sso-infinispan:add(socket-bindings=[remote-cache])
 run-batch
-## Work Cache
+### Work Cache
 /subsystem=infinispan/cache-container=keycloak/replicated-cache=work/store=remote:add(cache=work,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-## Sessions Cache
+### Sessions Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=sessions/store=remote:add(cache=sessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-## SfflineSessions Cache
+### SfflineSessions Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineSessions/store=remote:add(cache=offlineSessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-## ClientSessions Cache
+### ClientSessions Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=clientSessions/store=remote:add(cache=clientSessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-## OfflineClientSessions Cache
+### OfflineClientSessions Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=offlineClientSessions/store=remote:add(cache=offlineClientSessions,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-## ActionTokens Cache
+### ActionTokens Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=actionTokens/store=remote:add(cache=actionTokens,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-## LoginFailures Cache
+### LoginFailures Cache
 /subsystem=infinispan/cache-container=keycloak/distributed-cache=loginFailures/store=remote:add(cache=loginFailures,remote-servers=[remote-cache],passivation=false,fetch-state=false,purge=false,preload=false,shared=true,properties={rawValues=true,marshaller=org.keycloak.cluster.infinispan.KeycloakHotRodMarshallerFactory})
-### Logging
+## Logging
 /subsystem=logging/logger=org.keycloak/:add(category=org.keycloak,level=${env.LOG_LEVEL_KEYCLOAK:WARN})
 /subsystem=logging/logger=org.hibernate/:add(category=org.hibernate,level=${env.LOG_LEVEL_HIBERNATE:WARN})
 /subsystem=logging/logger=org.jgroups/:add(category=org.jgroups,level=${env.LOG_LEVEL_JGROUPS:WARN})
 /subsystem=logging/logger=org.infinispan/:add(category=org.infinispan,level=${env.LOG_LEVEL_INFINISPAN:WARN})
+## Disable Caching
+/subsystem=keycloak-server/spi=userCache/provider=default:write-attribute(name=enabled,value=false)
+/subsystem=keycloak-server/spi=realmCache/provider=default:write-attribute(name=enabled,value=false)
 quit
