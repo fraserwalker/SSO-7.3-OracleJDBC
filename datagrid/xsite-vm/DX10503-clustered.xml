@@ -42,15 +42,6 @@
                     <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
                 </authorization>
             </security-realm>
-            <security-realm name="AllowScriptManager">
-                <authentication>
-                    <users>
-                        <user username="___script_manager">
-                            <password>not-so-secret-password</password>
-                        </user>
-                    </users>
-                </authentication>
-            </security-realm>
         </security-realms>
         <audit-log>
             <formatters>
@@ -260,12 +251,6 @@
         </subsystem>
         <subsystem xmlns="urn:infinispan:server:core:9.4" default-cache-container="clustered">
             <cache-container name="clustered" default-cache="work" statistics="true">
-                <security>
-                    <authorization>
-                        <identity-role-mapper/>
-                        <role name="___script_manager" permissions="ALL"/>
-                    </authorization>
-                </security>
                 <transport lock-timeout="60000"/>
                 <global-state/>
                 <replicated-cache-configuration name="sessions-cfg" mode="SYNC" start="EAGER" batching="false">
@@ -289,13 +274,6 @@
         <subsystem xmlns="urn:infinispan:server:endpoint:9.4">
             <hotrod-connector socket-binding="hotrod" cache-container="clustered">
                 <topology-state-transfer lazy-retrieval="false" lock-timeout="1000" replication-timeout="5000"/>
-                <authentication security-realm="AllowScriptManager">
-                    <sasl mechanisms="DIGEST-MD5" qop="auth" server-name="keycloak-jdg-server">
-                        <policy>
-                            <no-anonymous value="false" />
-                        </policy>
-                    </sasl>
-                </authentication>
             </hotrod-connector>
             <rest-connector socket-binding="rest" cache-container="clustered">
                 <authentication security-realm="ApplicationRealm" auth-method="BASIC"/>
